@@ -5,6 +5,9 @@ import json
 import requests
 import re
 import nltk
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from nltk.util import ngrams
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('vader_lexicon')
@@ -34,19 +37,24 @@ def predict_stock_sentiment(sentence):
     positive_count = 0
     negative_count = 0
     lemmatizer = WordNetLemmatizer()
-    pos_list=[]
-    neg_list=[]
+    pos_list = []
+    neg_list = []
+    
     for p in positive_keywords:
-            pos_list.append(lemmatizer.lemmatize(p, pos='v'))
+        pos_list.append(lemmatizer.lemmatize(p, pos='v'))
     for n in negative_keywords:
-            neg_list.append(lemmatizer.lemmatize(n, pos='v'))
-    for word in words:
-        lemma = lemmatizer.lemmatize(word, pos='v')
+        neg_list.append(lemmatizer.lemmatize(n, pos='v'))
+    
+    # Generate n-grams of length 2
+    word_bigrams = list(ngrams(words, 2))
+    
+    for word in words + word_bigrams:
+        lemma = lemmatizer.lemmatize(" ".join(word), pos='v')
         if lemma in pos_list:
             positive_count += 1
         elif lemma in neg_list:
             negative_count += 1
-    
+
     positivity_score = calculate_positivity_score(positive_count, negative_count)
     
     return positivity_score
