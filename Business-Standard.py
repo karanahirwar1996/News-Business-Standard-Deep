@@ -37,26 +37,18 @@ def predict_stock_sentiment(sentence):
     positive_count = 0
     negative_count = 0
     lemmatizer = WordNetLemmatizer()
-    pos_list = []
-    neg_list = []
-    
-    for p in positive_keywords:
-        pos_list.append(lemmatizer.lemmatize(p, pos='v'))
-    for n in negative_keywords:
-        neg_list.append(lemmatizer.lemmatize(n, pos='v'))
-    
-    # Generate n-grams of length 2
-    word_bigrams = list(ngrams(words, 2))
-    
-    for word in words + word_bigrams:
-        lemma = lemmatizer.lemmatize(" ".join(word), pos='v')
-        if lemma in pos_list:
+
+    for word in words:
+        lemma = lemmatizer.lemmatize(word, pos='v')
+        if lemma in positive_keywords:
             positive_count += 1
-        elif lemma in neg_list:
+
+    for phrase in negative_keywords:
+        if phrase in sentence:
             negative_count += 1
 
     positivity_score = calculate_positivity_score(positive_count, negative_count)
-    
+
     return positivity_score
 
 def extract_date(timestamp):
