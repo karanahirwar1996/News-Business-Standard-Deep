@@ -139,7 +139,7 @@ def positive_news():
             dip.append(predict_stock_sentiment(result))
 
     filtered_df["Deep Score"] = dip
-    final = filtered_df.loc[(filtered_df['Deep Score'] >45) & (filtered_df['Normal Score'] >= 0)].reset_index(drop=True)
+    final = filtered_df.loc[(filtered_df['Deep Score'] >20) & (filtered_df['Normal Score'] >= 0)].reset_index(drop=True)
 
     sender_email = "karan.ahirwar1996@gmail.com"
     receiver_email = list(pd.read_csv("./emaillist.csv")['mail'])
